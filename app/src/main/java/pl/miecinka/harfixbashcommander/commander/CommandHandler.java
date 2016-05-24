@@ -2,15 +2,18 @@ package pl.miecinka.harfixbashcommander.commander;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.widget.TextView;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import pl.miecinka.harfixbashcommander.mods.Governor;
+import pl.miecinka.harfixbashcommander.mods.CPUFrequency;
+import pl.miecinka.harfixbashcommander.mods.GovernorValues;
 
 /**
  * Created by emsi on 07.05.2016.
@@ -19,8 +22,46 @@ public class CommandHandler {
 
     public static CommandExecutionInfo changeGovernor(String value, Context context)
     {
-        CommandExecutionInfo executionInfo = execCommand(value, Governor.path, context);
+        CommandExecutionInfo executionInfo = changeValueInPath(value, GovernorValues.path, context);
         return executionInfo;
+    }
+
+    public static String getValueFromFile(String path, Context context)
+    {
+        String command = "cat " + path; String resultStr = "";
+        try {
+            Runtime rt = Runtime.getRuntime();
+            Process process = rt.exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes(command + "\n");
+            os.flush();
+            os.writeBytes("exit\n");
+            os.flush();
+            int result = process.waitFor();
+            if(result == 0)
+            {
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = br.readLine()) != null){
+                    resultStr = resultStr + line;
+                    Log.d("execCmd", line);
+                }
+            }
+        } catch (IOException e) {
+            new AlertDialog.Builder(context)
+                    .setTitle("Error executing command")
+                    .setMessage(e.getMessage())
+                    .show();
+            return "error";
+        } catch (InterruptedException e) {
+            new AlertDialog.Builder(context)
+                    .setTitle("Error executing command")
+                    .setMessage(e.getMessage())
+                    .show();
+            return "error";
+        }
+        return resultStr;
     }
 
     public static String getKernelInfo()
@@ -54,9 +95,9 @@ public class CommandHandler {
         return kernelInfo;
     }
 
-    private static CommandExecutionInfo execCommand(String value, String path, Context context)
+    private static CommandExecutionInfo changeValueInPath(String value, String path, Context context)
     {
-        String command = "echo " + value + " >> " + path;
+        String command = "echo " + value + " > " + path;
         try {
             Runtime rt = Runtime.getRuntime();
             Process process = rt.exec("su");
@@ -81,4 +122,16 @@ public class CommandHandler {
         }
         return new CommandExecutionInfo(true, command);
     }
+
+    public static CommandExecutionInfo changeMinFrequency(String value, Context context) {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, CPUFrequency.minFrequencyPath, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo changeMaxFrequency(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, CPUFrequency.maxFrequencyPath, context);
+        return executionInfo;
+    }
+
 }

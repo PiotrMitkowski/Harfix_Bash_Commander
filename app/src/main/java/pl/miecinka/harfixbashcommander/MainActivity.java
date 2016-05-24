@@ -1,58 +1,45 @@
 package pl.miecinka.harfixbashcommander;
 
 import android.content.Context;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
-import pl.miecinka.harfixbashcommander.commander.CommandExecutionInfo;
-import pl.miecinka.harfixbashcommander.commander.CommandHandler;
-import pl.miecinka.harfixbashcommander.mods.Governor;
+import pl.miecinka.harfixbashcommander.layout.fragments.CPUTab;
+import pl.miecinka.harfixbashcommander.layout.fragments.MiscTab;
+import pl.miecinka.harfixbashcommander.utils.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Spinner governorSpinner;
-    private Button runCmdButton;
-    private TextView commandLabel;
-    private TextView kernelInfoLabel;
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        governorSpinner = (Spinner)findViewById(R.id.governor_select);
-        runCmdButton = (Button)findViewById(R.id.run_command);
-        commandLabel = (TextView)findViewById(R.id.command_label);
-        kernelInfoLabel = (TextView)findViewById(R.id.kernel_info);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        viewPager = (ViewPager)findViewById(R.id.container);
+        tabLayout = (TabLayout)findViewById(R.id.tabs);
         context = this;
 
-        kernelInfoLabel.setText("Kernel: " + CommandHandler.getKernelInfo());
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
 
-        ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Governor.names);
-        governorSpinner.setAdapter(stringAdapter);
+    }
 
-        runCmdButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String selectedValue = governorSpinner.getSelectedItem().toString();
-                CommandExecutionInfo executionInfo = CommandHandler.changeGovernor(selectedValue, context);
-                commandLabel.setText("Executing Command: " + executionInfo.getExecMessage());
-                Boolean isSuccess = executionInfo.getIsSuccess();
-                if(isSuccess)
-                {
-                    Toast.makeText(context, "Pomyślnie zmieniono Governor na " + selectedValue, Toast.LENGTH_SHORT);
-                }
-                else
-                {
-                    Toast.makeText(context, "Błąd zmiany Governora", Toast.LENGTH_SHORT);
-                }
-            }
-        });
+    private void setupViewPager(ViewPager viewPager)
+    {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new CPUTab(), "CPU");
+        adapter.addFragment(new MiscTab(), "Misc");
+        viewPager.setAdapter(adapter);
+
     }
 }
