@@ -9,5 +9,5 @@ import java.util.List;
 public class GovernorValues {
 
     public static String path = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
-    public static String[] names  = {"darkness", "zzmoove", "intelliactive", "smartassV2", "lulzactiveq", "interactive", "conservative", "ondemand", "pegasusq", "performance"};
+    public static String[] names  = {"darkness", "zzmoove", "intelliactive", "smartassV2", "lulzactiveq", "interactive", "conservative", "ondemand", "pegasusq", "performance", "yankasusq", "googyq"};
 }

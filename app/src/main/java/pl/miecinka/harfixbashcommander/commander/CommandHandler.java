@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 
 import pl.miecinka.harfixbashcommander.mods.CPUFrequency;
 import pl.miecinka.harfixbashcommander.mods.GovernorValues;
+import pl.miecinka.harfixbashcommander.mods.MiscHandler;
 
 /**
  * Created by emsi on 07.05.2016.
@@ -63,6 +64,8 @@ public class CommandHandler {
         }
         return resultStr;
     }
+
+
 
     public static String getKernelInfo()
     {
@@ -131,6 +134,43 @@ public class CommandHandler {
     public static CommandExecutionInfo changeMaxFrequency(String value, Context context)
     {
         CommandExecutionInfo executionInfo = changeValueInPath(value, CPUFrequency.maxFrequencyPath, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo toggleTouchWake(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.TOUCHWAKE_PATH, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo setTouchWakeDelay(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.DELAY_PATH, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo setACPower(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.AC_CHARGER_PATH, context);
+        return executionInfo;
+    }
+
+
+    public static CommandExecutionInfo setUSBPower(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.USB_CHARGER_PATH, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo toggleKnockOn(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.KNOCKON_PATH, context);
+        return executionInfo;
+    }
+
+    public static CommandExecutionInfo toggleChargerMode(String value, Context context)
+    {
+        CommandExecutionInfo executionInfo = changeValueInPath(value, MiscHandler.KNOCKON_PATH, context);
         return executionInfo;
     }
 
